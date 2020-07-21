@@ -1,0 +1,47 @@
+1-  
+Please use following commands to sync the repos:
+
+mdm9x50:
+repo init -u git://git.quicinc.com/le/manifest.git -b LE.UM.1.3
+reposync --no-tags -j8 -qc
+
+to build:
+cd poky
+source build/conf/set_bb_env.sh
+build-9650-image
+
+2- 
+mdm9x40:
+repo init -u git://git.quicinc.com/mdm/manifest.git -b refs/tags/AU_LINUX_BASE_LNX.LE.5.3_TARGET_ALL.01.76.228 -m versioned.xml
+repo init -u git://git.quicinc.com/mdm/manifest.git -b LNX.LE.5.3
+reposync --no-tags -j8 -qc
+
+
+cd oe-core
+source build/conf/set_bb_env.sh
+build9640
+
+3- 
+mdm9x07:
+repo init -u git://git.quicinc.com/le/manifest.git -b refs/tags/AU_LINUX_EMBEDDED_LE.UM.2.3.6_TARGET_ALL.01.103.064 -m versioned.xml
+reposync --no-tags -j8 -qc
+
+
+#LE.BR.1.2.1
+repo init -u git://git.quicinc.com/mdm/manifest.git -b LE.BR.1.2.1; reposync --no-tags -j8 -qc; cd oe-core; source build/conf/set_bb_env.sh; build9607
+
+
+#To check our particular AU (AU_LINUX_BASE_LNX.LE.5.3_TARGET_ALL.01.76.228)
+repo init -u git://git.quicinc.com/mdm/manifest.git -b refs/tags/AU_LINUX_BASE_LNX.LE.5.3_TARGET_ALL.01.76.228 -m versioned.xml
+reposync --no-tags -j8 -qc
+
+repo init -u git://git.quicinc.com/le/manifest.git -b LE.UM.2.3.6 --repo-url=git://git.quicinc.com/tools/repo --repo-branch=aosp/stable
+​[7/16 8:12 PM] Shrikant Maurya (Temp)
+    
+
+4- 
+mkdir LE.UM.4.1.1.C1_140
+
+cd LE.UM.4.1.1.C1_140
+repo init -u git://git.quicinc.com/le/manifest.git -b refs/tags/AU_LINUX_EMBEDDED_LE.UM.4.1.1.C1_TARGET_ALL.01.200.140 -m versioned.xml
+repo sync --no-tags -qc -j8
