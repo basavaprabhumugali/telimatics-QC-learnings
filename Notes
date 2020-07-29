@@ -45,3 +45,11 @@ mkdir LE.UM.4.1.1.C1_140
 cd LE.UM.4.1.1.C1_140
 repo init -u git://git.quicinc.com/le/manifest.git -b refs/tags/AU_LINUX_EMBEDDED_LE.UM.4.1.1.C1_TARGET_ALL.01.200.140 -m versioned.xml
 repo sync --no-tags -qc -j8
+
+
+4-   Statisc Analyis wesite
+https://saweb/project/find 
+
+5- Portal to find AU ->> https://lincase.qualcomm.com/bait/?branch=LE.UM.4.1.1&os=Linux-Embedded&page=t7
+
+6- For jira ticket ->   https://jira.qualcomm.com/jira/browse/STATICA-20471?filter=-2
