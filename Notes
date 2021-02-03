@@ -43,8 +43,8 @@ repo init -u git://git.quicinc.com/le/manifest.git -b LE.UM.2.3.6 --repo-url=git
 mkdir LE.UM.4.1.1.C1_140
 
 cd LE.UM.4.1.1.C1_140
-repo init -u git://git.quicinc.com/le/manifest.git -b refs/tags/AU_LINUX_EMBEDDED_LE.UM.4.1.1.C1_TARGET_ALL.01.200.140 -m versioned.xml
-repo sync --no-tags -qc -j8
+python3 repo init -u git://git.quicinc.com/le/manifest.git -b refs/tags/AU_LINUX_EMBEDDED_LE.UM.4.1.1.C1_TARGET_ALL.01.200.140 -m versioned.xml
+python3 repo sync --no-tags -qc -j8
 
 
 4-   Statisc Analyis wesite
