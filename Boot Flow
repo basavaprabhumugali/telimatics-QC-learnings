@@ -1,0 +1,39 @@
+a small breakdown of point we need to cover in the ppt
+	1. Boot flow 
+		1. High level Diagram 
+		2. PBL 
+			1. CDT 
+			2. Normal execution sequence 
+		3. SBL stage 1 
+			1. RPM 
+			2. QSEE 
+		4. SBL stage 2 
+			1. LK Boot Flow 
+				1. Normal 
+				2. Recovery/Flashing 
+			2. Detail boot flow 
+				1. Normal 
+				2. Abnormal 
+			3. Normal boot 
+			4. Abnormal boot 
+				1. Watchdog reset 
+				2. QSEEE 
+				3. SSR 
+				4. Crash
+Boot Use cases 
+1- Normal Power ON 
+2- Abnormal reset : 
+- Watchdog ti meout 
+- crash 
+- reboot cmd 
+- SSR 
+3- Wake up out of low power mode(LPM) 
+
+Consolidated Info –
+GCC_RESET_STATUS:
+0x0: Reset was triggered by SW or some other external mechanism
+0x1: Not a valid Value , In some wiki this says Non Sec WD but may not be correct. We
+can assume it’s not a valid value.
+0x2: wdog reset
+0x4: SRST reset. You’ll see this only when you do sys.u with JTAG.
+0x8: Tsens reset. This will happen only when device overheats.
