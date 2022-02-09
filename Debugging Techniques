@@ -1,0 +1,14 @@
+Debugging Techniques
+
+1) Error routing infrastructure
+2) Debugging in Non-secure world domain
+	• Classify crash by logs (kernel log, TrustZone(TZ)/RPM logs, register)
+	• Panic errors shown in kernel log
+	• BUG_ON
+	• Prefetchabort
+	• Unhandled page fault or NULL pointer access
+	• Cache ECC error
+	• Subsystem crash
+	• Out-of-memory
+	• Non-secure watchdog bark
+3) Multi-core debuggin
