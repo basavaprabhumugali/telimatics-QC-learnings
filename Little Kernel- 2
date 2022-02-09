@@ -1,0 +1,91 @@
+STARTUP SEQUENCE
+
+
+• arch/arm/crt0.S: _start (defined in arch/arm/system-onesegment.ld)
+	• Setup CPU
+	• Calls __cpu_early_init if necessary
+		• platform/<platform>/(arch_init.S): __cpu_early_init
+		• Platform-specific initialization sequence, e.g. for 8K targets
+	• Relocate if necessary
+	• Setup stack
+	• Calls kmain()
+
+• kernel/main.c: kmain()
+	• thread_init_early()              -> get us into some sort of thread context
+	• arch_early_init()                  -> early arch stuff
+					• arch/arm/arch.c: arch_early_init()
+						◊ disable cache
+						◊ set IRQ vector base
+						◊ init MMU
+						◊ MMU mapping
+						◊ enable cache
+						◊ init Neon
+				
+	• platform_early_init()          - > do any super early platform initialization
+					• platform/<platform>/(platform.c): platform_early_init()
+						◊ init UART
+						◊ init interrupts
+						◊ init timer
+					
+					
+	• target_early_init()                - > do any super early target initialization  
+					• target/init.c: target_early_init()
+						◊ Init SPMI -> SystemPower management Interface
+						◊ Init keypad
+						◊  Set drive strength and pull configs for SDC pins (we have transitioned to SDHCI) -> NAND(HARD DISK)
+						◊ Init the SD host controller/MMC card; identify the MMC card; set the clock, etc.
+						◊ mmc_init() 
+						◊ Read the partition table from the eMMC card
+						◊  partition_read_table()  
+					
+	• call constructors defined by __ctor_list (which is nothing)         ->  deal with any static constructors
+	• init: heap, thread, dpc, timer           
+	• create init thread: bootstrap2(), main thread goes to sleep        ->  create a thread to complete system initialization
+
+• kernel/main.c: bootstrap2()
+	• arch_init()   ->   
+			• arch/arm/arch.c: arch_init()
+				□ Stub
+			
+	• platform_init()  -> 
+			• platform/<platform>/(platform.c): platform__init()
+				□ init Apps CPU clock
+				□ init MDDI/LCDC
+				□ setup frame buffer
+			
+	• target_init()  -> 
+			• target/<target>/(init.c): target_init()
+				□ init keypad
+				□ init flash partition table
+				□ init flash
+			
+	• apps_init()    ->
+			• app/init.c: apps_init()
+				□ init apps that are defined using APP_START & APP_END macros,
+				□  aboot_init() is called during this step
+				□ run the app in a separate thread if it has .entry section
+			
+					• app/aboot/aboot.c: aboot_init()
+						◊ Regular Boot
+						◊ Fastboot mode to accept images (boot from USB) if key pressed
+						◊ Recovery mode to jump to recovery firmware
+
+
+
+LK REGULAR BOOT 
+
+1- Recovery flag or fastboot key not set.
+	2- Pull out boot.img from NAND/EMMC and load it into SCRATCH REGION(base address = 0x80000000) specified in target/<target-name>/rules.mk
+	3-  Loads  kernel images from SCRATCH region into KERNEL_ADDRESS( retrieved from  boot .img header).
+	4- Loads ramdisk image from SCATRCH region into RAMDISK_ADDR(retrieved from  boot .img header).
+	5- Finds the right device tree (appropriate to that SOC)  from the device tree table and loads to TAG_ADDR(retrieved from boot image header)
+	6- Updates the device tree by: 
+		a.  Getting the offset for the ‘/memory’ node and ‘/chosen’ node. 
+		b.  Adding HLOS memory regions (start address and size) as “reg” properties to ‘/memory’ node.
+		c.  Adding the cmd line as “bootargs” to the ‘/chosen’ node.
+		d.  Adding the RAM disk properties as “linux, initrd-start” and “linux, initrd-end” to the ‘/chosen’ node.
+		e.  Disable cache, interrupts, jump to kernel.
+ This boot flow is illustrated through code snippets in the next section.
+
+
+SCRATCH_REGION -> BUFFER IN RAM
