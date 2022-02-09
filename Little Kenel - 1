@@ -1,0 +1,93 @@
+LK Call flow
+
+Makefile include order
+
+lk/makefile =>>>>
+
+1-include project/$(PROJECT).mk  
+	1- TARGET := mdm9607
+	2- MODULES += app/aboot
+	3- Some features like: WITH_DEBUG_UART, WITH_DEBUG_LOG_BUF, DEVICE_TREE, CONTIGUOUS_MEMORY, SPMI_CORE_V2, BAM_V170, ENABLE_SMD_SUPPORT, ENABLE_THUMB
+
+
+
+
+2-include target/$(TARGET)/rules.mk
+	1- PLATFORM := mdm9607
+	2- board-level settings:
+	                                    - MEMBASE 
+	                                    - MEMSIZE
+				  - SCRATCH_REGION
+				 - BASE_ADDR
+	                                    - linux_machinetype,
+	                                    -  gpio 
+	                                     -keypad
+	3- Include:  platform/msm_shared
+	4- Features: DISPLAY_SPLASH_SCREEN , NO_KEYPAD_DRIVER, PERIPH_BLK_BLSP
+	5- Basically it will define: init, meminfo, regulator, keypad, target_display , qpic_pannel_drv 
+	6- DEVS += fbcon
+fbcon:  In short it will directly allow to use video h/w buffers to applications for printing txt on console
+            https://www.kernel.org/doc/html/latest/fb/fbcon.html?highlight=console
+            https://www.kernel.org/doc/html/latest/fb/framebuffer.html
+ 
+	
+3-include target/$(TARGET)/tools/makefile
+	1- Makefile to generate appsboot.mbn
+ABOOTMBN := appsboot.mbn
+	
+
+
+4-include platform/$(PLATFORM)/rules.mk
+	1- CPU level setting :
+	    ARCH          := arm
+	   ARM_CPU   :=  cortex-a8                             
+              CPU              := generic
+	2- Features:  ARM_CPU_CORE_A7 ,
+	                  PERIPH_BLK_BLSP
+	                  WITH_CPU_EARLY_INIT=0  , WITH_CPU_WARM_BOOT=0
+	3- Include:   platform/msm_shared/include
+                  platform/msm_shared/rules.mk
+	4- Files:   gpio.0
+	            acpuclock.o
+	            platform.o
+	            mdm9707-clock.o
+	
+	
+5-platform/msm_shared/rules.mk
+	1- ifeq ($(PLATFORM),mdm9607)
+	        OBJS += $(LOCAL_DIR)/qgic.o \
+	                        $(LOCAL_DIR)/qtimer.o \
+	                        $(LOCAL_DIR)/qtimer_mmap.o \
+	                        $(LOCAL_DIR)/interrupts.o \
+	                        $(LOCAL_DIR)/clock.o \
+	                        $(LOCAL_DIR)/clock_pll.o \
+	                        $(LOCAL_DIR)/clock_lib2.o \
+	                        $(LOCAL_DIR)/uart_dm.o \
+	                        $(LOCAL_DIR)/board.o \
+	                        $(LOCAL_DIR)/spmi.o \
+	                        $(LOCAL_DIR)/bam.o \
+	                        $(LOCAL_DIR)/qpic_nand.o \
+	                        $(LOCAL_DIR)/crypto_hash.o \
+	                        $(LOCAL_DIR)/crypto5_eng.o \
+	                        $(LOCAL_DIR)/crypto5_wrapper.o \
+	                        $(LOCAL_DIR)/certificate.o \
+	                        $(LOCAL_DIR)/image_verify.o \
+	                        $(LOCAL_DIR)/flash-ubi.o \
+	                        $(LOCAL_DIR)/scm.o \
+	                        $(LOCAL_DIR)/dev_tree.o
+	endif
+	2- It will include object files for features which are enabled.
+	Example:  ENABLE_WDOG_SUPPORT, ENABLE_SMD_SUPPORT, ENABLE_SDHCI_SUPPORT …etc.
+	
+	
+	
+
+6-include arch/$(ARCH)/rules.mk
+	1- 
+
+
+include platform/rules.mk
+include target/rules.mk
+include kernel/rules.mk
+include dev/rules.mk
+include app/rules.mk
