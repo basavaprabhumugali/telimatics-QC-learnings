@@ -1,0 +1,7 @@
+SHUTDOWN
+
+1-  /etc folder means a central location for all your configuration files are located and this can be treated as nerve centre of your Linux/Unix machine.
+
+2- https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/etc.html     - > study all /etc 
+3-  https://www.debian.org/doc/debian-policy/#contents
+4-  ********  https://docs.oracle.com/cd/E19683-01/817-3814/6mjcp0qge/index.html
